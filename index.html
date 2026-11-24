@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doc to HTML</title>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<style>
+:root{--bg:#eceff3;--panel:#fff;--ink:#1c2530;--muted:#5d6b7a;--line:#cfd6de;--accent:#2a56c6;--accent-ink:#fff;--code:#f5f7f9}
+@media (prefers-color-scheme:dark){:root{--bg:#12171d;--panel:#1b222b;--ink:#e6ebf0;--muted:#93a1b1;--line:#2c3642;--accent:#6b93f0;--accent-ink:#0d1420;--code:#151b22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:22px 28px 6px}
+h1{margin:0;font:600 22px/1.2 Georgia,"Times New Roman",serif}
+header p{margin:4px 0 0;color:var(--muted)}
+main{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:18px 28px 28px;height:calc(100vh - 86px);min-height:520px}
+@media (max-width:860px){main{grid-template-columns:1fr;height:auto}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column;min-height:0;min-width:0}
+.bar{display:flex;align-items:center;gap:4px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.bar .sp{flex:1}
+.tab,.btn{font:inherit;border:1px solid transparent;background:none;color:var(--muted);padding:5px 11px;border-radius:6px;cursor:pointer}
+.tab[aria-selected=true]{color:var(--ink);border-color:var(--line);background:var(--code)}
+.btn{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn:disabled{opacity:.4;cursor:default}
+:is(.tab,.btn,input,textarea):focus-visible,.drop:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.body{flex:1;min-height:0;padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.drop,.paste{flex:1;min-height:200px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted);cursor:pointer}
+.drop.over,.paste:focus{border-color:var(--accent);color:var(--ink)}
+.paste{cursor:text;overflow:auto;align-items:flex-start;justify-content:flex-start;text-align:left}
+input[type=url]{font:inherit;width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--code);color:var(--ink)}
+label.opt{display:flex;gap:8px;align-items:center;color:var(--muted)}
+.msg{font-size:14px;color:var(--muted)} .msg.err{color:#c43b3b}
+textarea{flex:1;width:100%;border:0;resize:none;padding:14px;background:var(--code);color:var(--ink);font:13px/1.55 ui-monospace,Menlo,Consolas,monospace;border-radius:0 0 8px 8px;min-height:300px}
+iframe{flex:1;width:100%;border:0;background:#fff;border-radius:0 0 8px 8px;min-height:300px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>Doc to HTML</h1>
+  <p>Turn a Google Doc or .docx into clean HTML you can paste anywhere. Everything runs on this computer.</p>
+</header>
+<main>
+  <section aria-label="Input">
+    <div class="bar" role="tablist">
+      <button class="tab" role="tab" data-in="file" aria-selected="true">Upload .docx</button>
+      <button class="tab" role="tab" data-in="paste" aria-selected="false">Paste from Google Docs</button>
+    </div>
+    <div class="body">
+      <div id="in-file" class="drop" tabindex="0">Drop a .docx here, or click to choose a file</div>
+      <input id="file" type="file" accept=".docx" hidden>
+      <div id="in-paste" class="paste hide" contenteditable="true" tabindex="0" role="textbox" aria-label="Paste area">Click here, then paste (Ctrl/Cmd+V) text copied from Google Docs</div>
+      <div id="msg" class="msg" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section aria-label="Output">
+    <div class="bar" role="tablist">
+      <button class="tab" role="tab" data-out="code" aria-selected="true">HTML</button>
+      <button class="tab" role="tab" data-out="preview" aria-selected="false">Preview</button>
+      <span class="sp"></span>
+      <button id="copy" class="btn" disabled>Copy HTML</button>
+    </div>
+    <textarea id="out" readonly spellcheck="false" placeholder="Your HTML will appear here."></textarea>
+    <iframe id="preview" class="hide" sandbox title="Preview"></iframe>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
